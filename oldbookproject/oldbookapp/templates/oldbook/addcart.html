@@ -1,0 +1,47 @@
+{% extends "bash.html" %}
+
+{% block content %}
+
+<!-- Main Content (Add to Cart) -->
+<div class="center-content">
+    <div class="cart">
+        <h2>Your Cart</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Book Title</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart%}
+                <tr>
+                    <td>{{ item.book.Book_Title }}</td>  <!-- Access book title correctly -->
+                    <td>{{ item.book.price }}</td> 
+                    
+                    <td> <a href="{% url 'cart_delete' item.id %}" class="btn btn-danger btn-sm">Remove</a></td>
+                  
+                </tr>
+                {% empty %}
+                <tr>
+                   <td colspan="3">Your cart is empty.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <h5>Total: ${{ total_price }}</h5>
+        <a href="{% url 'payment'%}" class="btn btn-primary">Proceed to Payment</a>
+      
+    </div>
+</div>
+
+
+
+
+
+
+
+
+{% endblock %}

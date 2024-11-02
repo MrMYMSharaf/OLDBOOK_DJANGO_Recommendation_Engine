@@ -1,0 +1,163 @@
+{% extends "bash.html" %}
+
+{% block content %}
+<!-- Main Content (Book Details) -->
+<div class="center-content">
+    <div class="book-details">
+        <img style="width: 800px; height: 400px; justify-content: left;" src="{{ book.Image_URL }}" alt="">
+        <h2>Book Title: {{ book.Book_Title }}</h2>
+        <p><strong>Author:</strong> {{ book.Book_Author }}</p>
+        <p><strong>Published:</strong> {{ book.Year_Of_Publication }}</p>
+        <p><strong>Description:</strong> {{ book.Description }}</p>
+        <p><strong>Price:</strong> {{ book.price }}</p>
+        
+        <!-- Add to Cart Form -->
+        <form id="addToCartForm" method="POST" action="{% url 'addcartItem' %}">
+            {% csrf_token %}
+            <input type="hidden" name="book_id" value="{{ book.id }}">
+            <button type="submit" class="btn btn-primary">Add to Cart</button> 
+        </form>
+    </div>
+</div>
+
+<!-- Rating System -->
+<div class="center-content">
+    <div>
+        <h2>-- Rate the Book --</h2>
+        <form method="POST" id="ratingForm">  <!-- Added id for the form -->
+            {% csrf_token %}
+            <div>
+                {% for i in "012345678910" %}
+                    <span class="fa fa-star {% if existing_rating and existing_rating.rating >= forloop.counter0 %}checked{% endif %}" data-value="{{ forloop.counter0 }}"></span>
+                {% endfor %}
+            </div>
+            <input type="hidden" name="rating" id="rating" value="{% if existing_rating %}{{ existing_rating.rating }}{% else %}0{% endif %}">
+            <button type="submit" class="btn btn-primary">Submit Rating</button>
+        </form>
+        {% if existing_rating %}
+            <p>Your Rating: {{ existing_rating.rating }}</p>
+        {% else %}
+            <p>Your Rating: Not Rated Yet</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Star Rating JavaScript -->
+<script>
+    const stars = document.querySelectorAll('.fa-star');
+    stars.forEach((star, index) => {
+        star.addEventListener('click', () => {
+            document.getElementById('rating').value = index;  // Set the hidden input value
+            stars.forEach((s, i) => {
+                s.classList.toggle('checked', i <= index);  // Update the star display
+            });
+        });
+    });
+</script>
+
+<!-- SweetAlert for rating submission -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    // Rating form submission
+    document.getElementById('ratingForm').onsubmit = function(event) {
+        event.preventDefault(); // Prevent default form submission
+        const formData = new FormData(this);
+
+        fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.json(); // Assume your view returns JSON response
+            }
+            throw new Error('Network response was not ok.');
+        })
+        .then(data => {
+            Swal.fire({
+                title: 'Success!',
+                text: 'Your rating has been submitted.',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            }).then(() => {
+                location.reload(); // Optionally refresh the page to show the updated rating
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                title: 'Error!',
+                text: 'There was a problem submitting your rating.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        });
+    };
+
+    // Add to Cart form submission
+    document.getElementById('addToCartForm').onsubmit = function(event) {
+        event.preventDefault(); // Prevent default form submission
+        const formData = new FormData(this);
+
+        fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.json(); // Assume your view returns JSON response
+            }
+            throw new Error('Network response was not ok.');
+        })
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    title: 'Success!',
+                    text: data.message,
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            } else {
+                Swal.fire({
+                    title: 'Already in Cart!',
+                    text: data.message,
+                    icon: 'info',
+                    confirmButtonText: 'OK'
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                title: 'Error!',
+                text: 'There was a problem adding the book to the cart.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        });
+    };
+</script>
+
+<style>
+    .fa-star {
+        color: lightgray; /* Default star color */
+        cursor: pointer; /* Change cursor to pointer when hovering over stars */
+        transition: color 0.2s ease; /* Smooth transition for color change */
+    }
+
+    .fa-star.checked {
+        color: gold; /* Color of the selected stars */
+    }
+
+    .fa-star:hover {
+        color: orange; /* Color of stars on hover */
+    }
+</style>
+
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "bash.html" %}
+
+{% block content %}
+<!-- PayPal Payment Button -->
+<div id="paypal-button-container"></div>
+
+<!-- Hidden form to capture PayPal payment ID and submit after successful payment -->
+<h2>You need to pay</h2>
+<h5>Totally: ${{ total_price }}</h5>
+<form id="myform" action="{% url 'payment_done' %}" method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="paypal_payment_id" id="paypal-payment-id">
+</form>
+
+<script src="https://www.paypal.com/sdk/js?client-id=AT-9V4o_Ntnhs6TgvnfvTDbhVe3j4DHB11TYsY6DhZ5XEs2gpCKVPjyCLJiYo4katruRTE9x6yizxi7E&currency=USD"></script>
+<script>
+    function initPayPalButton() {
+        paypal.Buttons({
+            style: {
+                shape: 'rect',
+                color: 'gold',
+                layout: 'vertical',
+                label: 'paypal',
+            },
+            createOrder: function (data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        "amount": {
+                            "currency_code": "USD",
+                            "value": '{{ total_price }}'
+                        }
+                    }]
+                });
+            },
+            onApprove: function (data, actions) {
+                return actions.order.capture().then(function (orderData) {
+                    var paypalPaymentID = orderData.purchase_units[0].payments.captures[0].id;
+                    // Full available details
+                    console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+                    
+                    // Show a success message within this page
+                    const element = document.getElementById('paypal-button-container');
+                    element.innerHTML = '<h3>Thank you for your payment!</h3>';
+                    
+                    // Set the payment ID in the hidden form and submit it
+                    document.getElementById('paypal-payment-id').value = paypalPaymentID;
+                    document.getElementById('myform').submit();
+                });
+            },
+            onError: function (err) {
+                console.log(err);
+                alert("An error occurred during the transaction. Please try again.");
+            }
+        }).render('#paypal-button-container');
+    }
+    initPayPalButton();
+</script>
+
+{% endblock %}
+<!-- https://www.tothenew.com/blog/integrating-paypal-payment-gateway-with-django-a-step-by-step-guide/ -->

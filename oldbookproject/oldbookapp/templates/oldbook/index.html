@@ -1,0 +1,133 @@
+
+{% extends "bash.html" %}
+{% load static %}
+{% block content %}
+    <!-- Main Content -->
+    <div class="center-content" style="background-image: url('{% static 'img/library.jpg' %}'); background-color: #cccccc; background-size: cover; background-position: center; color: white;">
+        <div class="">
+            <h1 class="h1 display-1 " ><strong>Welcome to the Old Book Store</strong></h1>
+            <p>Discover rare and vintage books from our collection</p>
+            <p class="h3">We have totally: {{ total_books }} Books</p>
+            <div>
+                <a href="details.html" class="btn btn-primary">Shop Now</a>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Search Form -->
+    <div class="m-5">
+        <form action="{% url 'index' %}" method="get">  <!-- Update action to point to the index view -->
+            <div class="input-group">
+                <input type="text" name="search" class="form-control" placeholder="Search this blog" value="{{ search_query }}">
+                <div class="input-group-append">
+                    <button class="btn btn-secondary" type="submit">
+                        <i class="fa fa-search"></i> <!-- Font Awesome search icon -->
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+  
+    <!-- Featured Books Section -->
+    <div class="container mt-3 mb-5">
+        <h2 class="text-center">Featured Books</h2>
+        <div class="row">
+            <!-- Book Card 1 -->
+             {% for item in page_obj.object_list %}
+            <div class="col-md-4">
+                <div class="card book-card">
+                    <img src="{{ item.Image_URL }}" class="card-img-top" alt="{{ item.Book_Title }}" style="width: 100%; height: auto; max-height: 20rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{item.Book_Title}}</h5>
+                        <p class="card-text">{{item.Description}}</p>
+                        <p class="card-text"><strong>Price: {{item.price}}</strong></p>
+                        <a href="{% url 'details' item.slug %}" class="btn btn-primary">Read More</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+<!-- Recommended Books Section -->
+{% if recommended_books %}
+<h2 class="text-center mt-3">Recommended Books</h2>
+<div class="recommended-books">
+    <div class="row">
+        {% for book in recommended_books %}
+        <div class="col-md-4"> <!-- Each book will take 1/3 of the row width -->
+            <div class="card book-card mb-3"> <!-- Added mb-3 for spacing between cards -->
+                <img src="{{ book.Image_URL }}" class="card-img-top" alt="{{ book.Book_Title }}" style="width: 100%; height: auto; max-height: 20rem;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ book.Book_Title }}</h5>
+                    <p class="card-text">{{ book.Description }}</p>
+                    <p class="card-text"><strong>Price: {{ book.price }}</strong></p>
+                    <a href="{% url 'details' book.slug %}" class="btn btn-primary">Read More</a>
+                </div>
+            </div>
+        </div>
+        {% if forloop.counter|divisibleby:3 and not forloop.last %}
+            </div><div class="row"> <!-- Start a new row after every 3 items, except after the last item -->
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+
+
+
+  <!-- Pagination -->
+<div class="text-center mt-3">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </span>
+                </li>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ num }}</span>
+                    </li>
+                {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </span>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+
+{% endblock %}
+
+
+  

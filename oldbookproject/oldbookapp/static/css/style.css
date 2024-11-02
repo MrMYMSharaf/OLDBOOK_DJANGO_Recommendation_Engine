@@ -1,0 +1,157 @@
+html, body {
+    margin: 0;
+    overflow-y: auto; /* Enables vertical scrolling */
+    background-color: rgb(150, 150, 150); /* Keep the black background */
+    color: white; /* Ensure text is readable */
+}
+
+.mainbody {
+    background-color: black;
+    padding: 20px;
+    text-align: center;
+    color: white; /* Ensure text is visible on dark background */
+}
+
+.center-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    text-align: center;
+}
+
+/* Ensure footer doesn't overlap */
+footer {
+    background-color: #b4b4b4;
+    color: #000;
+    padding: 10px 0;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.contact-form,
+.profile-info,
+.book-details,
+.cart,
+.payment-form {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.book-details img {
+    max-width: 100%; /* Ensures images are responsive */
+}
+
+.book-card {
+    margin: 15px;
+}
+
+.pagination {
+    justify-content: center;
+}
+
+.has-search .form-control {
+    padding-left: 2.375rem;
+}
+
+.has-search .form-control-feedback {
+    position: absolute;
+    z-index: 2;
+    display: block;
+    width: 2.375rem;
+    height: 2.375rem;
+    line-height: 2.375rem;
+    text-align: center;
+    pointer-events: none;
+    color: #aaa;
+}
+
+.container {
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+
+.card {
+    border-radius: 15px;
+    overflow: hidden;
+    background-color: white;
+    color: black;
+}
+
+.card-header {
+    border-bottom: none;
+}
+
+.card-header h2 {
+    font-weight: bold;
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #28ef05;
+    border-color: #0fd505;
+}
+
+.alert {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+}
+
+.img-fluid {
+    border-radius: 50%;
+    border: 4px solid #007bff;
+    object-fit: cover; /* Ensures the image covers the area and maintains aspect ratio */
+}
+
+.list-group-item {
+    padding: 1rem;
+    font-size: 1rem;
+}
+
+/* Media Query for responsive adjustments */
+@media (max-width: 768px) {
+    .center-content {
+        flex-direction: column; /* Stack items vertically on smaller screens */
+        height: auto;
+    }
+
+    .profile-info, .contact-form, .book-details, .cart, .payment-form {
+        max-width: 100%; /* Make forms and details responsive */
+        margin: 20px;
+    }
+
+    .footer {
+        position: static;
+        padding: 5px;
+    }
+}
+
+.fa-star {
+    color: lightgray; /* Default star color */
+    cursor: pointer; /* Change cursor to pointer when hovering over stars */
+    transition: color 0.2s ease; /* Smooth transition for color change */
+}
+
+.fa-star.checked {
+    color: gold; /* Color of the selected stars */
+}
+
+.fa-star:hover {
+    color: orange; /* Color of stars on hover */
+}
+
