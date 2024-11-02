@@ -1,0 +1,34 @@
+### To start the Project  First we need to start the env ###
+ -pip install virtualenv
+ -python -m virtualenv venv
+ -source venv/bin/activate
+ -pip install django
+ -django-admin startproject todoproject
+ -cd todoproject
+ -python manage.py startapp todoapp
+//
+
+ -python manage.py runserver
+
+##his will run your Django application locally. You should see output similar to
+ -Starting development server at http://127.0.0.1:8000/
+//when vscode is not active the django 
+ -Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process
+ -.\venv\Scripts\Activate
+
+
+###  you create the divide model
+python manage.py makemigrations 
+python manage.py migrate
+
+# create superuser in Django
+python manage.py createsuperuser
+
+python manage.py clearsessions
+
+
+admin01
+admin
+
+//paypal intergrating ///\
+ - pip install django-paypal
